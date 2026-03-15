@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Navbar } from "@/components/navbar";
 import Link from "next/link";
 import { Gamepad2, User, Trophy, MessageSquare } from "lucide-react";
@@ -111,6 +112,45 @@ export default function Home() {
           <p>CS 160, Section 02, Spring 2026 - Team #7</p>
         </div>
       </footer>
+=======
+"use client";
+
+import { supabase } from "@/lib/supabase";
+
+export default function Home() {
+  async function testConnection() {
+    const { data, error } = await supabase.from("users").select("*");
+
+    if (error) {
+      alert("Error: " + error.message);
+      console.log(error);
+    } else {
+      alert("Supabase connected successfully!");
+      console.log(data);
+    }
+  }
+
+  return (
+    <main style={{ minHeight: "100vh", padding: "40px", textAlign: "center" }}>
+      <h1>CoDE</h1>
+      <h2>Cove of Delightful Entertainment</h2>
+      <p>A web-based game platform for programmers.</p>
+
+      <button
+        onClick={testConnection}
+        style={{
+          marginTop: "20px",
+          padding: "12px 20px",
+          borderRadius: "8px",
+          border: "none",
+          cursor: "pointer",
+        }}
+      >
+        Test Supabase
+      </button>
+>>>>>>> ee046fe (Connected Supabase to Next.js)
     </main>
   );
 }
+
+
