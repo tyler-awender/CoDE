@@ -23,6 +23,7 @@ export function SignUpForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
+  const [username, setUsername] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -39,15 +40,30 @@ export function SignUpForm({
       return;
     }
 
+    if (!username.trim()) {
+      setError("Username is required");
+      setIsLoading(false);
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
+          data: { username: username.trim() }, // ← trigger reads this
           emailRedirectTo: `${window.location.origin}/protected`,
         },
       });
+
       if (error) throw error;
+
       router.push("/auth/sign-up-success");
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
@@ -67,6 +83,18 @@ export function SignUpForm({
           <form onSubmit={handleSignUp}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  placeholder="yourusername"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
+
+              <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
@@ -77,6 +105,7 @@ export function SignUpForm({
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
+
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
@@ -89,6 +118,7 @@ export function SignUpForm({
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
+
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="repeat-password">Repeat Password</Label>
@@ -101,11 +131,14 @@ export function SignUpForm({
                   onChange={(e) => setRepeatPassword(e.target.value)}
                 />
               </div>
+
               {error && <p className="text-sm text-red-500">{error}</p>}
+
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Creating an account..." : "Sign up"}
               </Button>
             </div>
+
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}
               <Link href="/auth/login" className="underline underline-offset-4">
