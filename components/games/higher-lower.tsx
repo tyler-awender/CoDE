@@ -1,21 +1,78 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { useState } from "react";
 
 export function HigherLower() {
-    const [started, setStarted] = useState(false);
-    const [gameOver, setGameOver] = useState(false);
-    const [score, setScore] = useState(0);
-    const [hue, setHue] = useState(199);
-    const tickRef = useRef(0);
+  const [started, setStarted] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
+  const [score, setScore] = useState(0);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            tickRef.current += 1;
-            setHue(230 + 30 * Math.sin(tickRef.current * 0.02));
-        }, 20);
-        return () => clearInterval(interval);
-    }, []);
+  const invalid = {
+    id: -1,
+    name: 'N/A',
+    star_count: -1,
+    description: 'N/A',
+    avatar_url: 'N/A'
+  }
+  const [option1, setOption1] = useState(invalid);
+  const [option2, setOption2] = useState(invalid);
+
+  const select_two = async () => {
+    const supabase = await createClient();
+    const { data, error } = await supabase.rpc('select_two_repos');
+
+    if (error) {
+      console.error('Error fetching random rows:', error);
+    } else {
+      setOption1(data[0]);
+      setOption2(data[1]);
+    }
+  };
+
+  const select_one = async (option1: number, option2: number) => {
+    const supabase = await createClient();
+    const { data, error } = await supabase.rpc('select_new_repo', {option1: option1, option2: option2});
+
+    if (error) {
+      console.error('Error fetching random row:', error);
+      return invalid;
+    } else {
+      return data;
+    }
+  };
+  
+  const check_correct = async (selected: number) => {
+    const button1 = document.getElementById(option1.id+'') as HTMLButtonElement;
+    const button2 = document.getElementById(option2.id+'') as HTMLButtonElement;
+    const stars1 = document.getElementById(option1.id+'_stars') as HTMLDivElement;
+    const stars2 = document.getElementById(option2.id+'_stars') as HTMLDivElement;
+
+    button1.disabled = true;
+    button2.disabled = true;
+
+    if ((option1.id == selected) && (option1.star_count >= option2.star_count) || (option2.id == selected) && (option1.star_count <= option2.star_count)) {
+      stars1.innerText = "⭐ " + option1.star_count.toLocaleString() + " stars";
+      stars2.innerText = "⭐ " + option2.star_count.toLocaleString() + " stars";
+      setScore(score + 1);
+
+      const newOption = await select_one(option1.id, option2.id);
+      setOption1(option2);
+      setOption2(newOption);
+      
+      button1.disabled = false;
+      button2.disabled = false;
+    } else {
+      setGameOver(true);
+    }
+  }
+
+  const startGame = async () => {
+    (document.getElementById("startButton") as HTMLButtonElement).disabled = true;
+    await select_two();
+    setScore(0);
+    setStarted(true);
+  }
 
     if (!started) {
     return (
@@ -24,14 +81,14 @@ export function HigherLower() {
     className="flex flex-col items-center justify-center gap-6 rounded-xl border border-border p-10"
     style={{
         background: `linear-gradient(135deg, hsl(162, 81%, 34%) 0%, hsl(224, 86%, 32%) 100%)`,
-        boxShadow: `0 0 40px hsl(0, 0%, 0%)`
+        boxShadow: `0 0 80px hsl(249, 87%, 27%)`
     }}
 >
             <div className="flex flex-col items-center gap-3 text-center">
                 <h3
                     className="text-4xl font-bold bg-clip-text text-transparent"
                     style={{
-                        backgroundImage: `linear-gradient(to right, hsl(${hue}, 60%, 20%), hsl(${(hue + 40) % 360}, 80%, 40%))`
+                        backgroundImage: `linear-gradient(to right, hsl(180, 66%, 47%), hsl(209, 66%, 57%))`
                     }}
                 >
                     Higher or Lower?
@@ -42,7 +99,8 @@ export function HigherLower() {
                 </p>
             </div>
             <button
-                onClick={() => { setScore(0); setStarted(true); }}
+                id="startButton"
+                onClick={ startGame }
                 className="px-8 py-3 rounded-md bg-gradient-to-r from-[hsl(199,60%,50%)] to-[hsl(166,80%,38%)] text-white font-semibold text-lg hover:opacity-90 transition-opacity"
             >
                 Start Game
@@ -68,22 +126,20 @@ export function HigherLower() {
             </span>
           </div>
           <div className="flex flex-1 gap-4">
-            {["A", "B"].map((label) => (
+            {[option1, option2].map((option) => (
               <button
-                key={label}
-                onClick={() => {setScore((s) => s + 1);}} /* Replace with star count check */
-                className="group flex-1 flex flex-col items-center justify-center gap-4  rounded-md border border-border bg-background hover:border-[hsl(199,60%,50%)] hover:bg-accent transition-all duration-200 p-6 text-left"
+                id={""+option.id}
+                key={option.id}
+                onClick={() => { check_correct(option.id); }}
+                className="group options flex-1 flex flex-col items-center justify-center gap-4  rounded-md border border-border bg-background hover:border-[hsl(199,60%,50%)] hover:bg-accent transition-all duration-200 p-6 text-left"
               >
-                <div className="w-full flex flex-col gap-2 items-center">
-                  <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center text-2xl font-bold text-muted-foreground group-hover:bg-[hsl(199,60%,50%)]/20 transition-colors">
-                    {label}
-                  </div>
-                  <div className="h-4 w-32 rounded bg-muted animate-pulse" />
-                  <div className="h-3 w-24 rounded bg-muted animate-pulse" />
+                <div className="w-full flex flex-col gap-2 items-center pb-20">
+                  <img src={option.avatar_url} className="w-16 h-16 rounded-full bg-muted flex items-center justify-center text-2xl font-bold text-muted-foreground group-hover:bg-[hsl(199,60%,50%)]/20 transition-colors"></img>
+                  
+                  <div className="rounded bg-muted text-center px-2">{option.name}</div>
+                  <div className="rounded bg-popover text-center px-1"> {option.description} </div>
+                  <div id = {option.id + '_stars'} className="rounded bg-card"> </div>
                 </div>
-                <span className="mt-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground group-hover:text-foreground transition-colors">
-                  Pick this
-                </span>
               </button>
             ))}
           </div>
