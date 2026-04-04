@@ -1,0 +1,51 @@
+/* Animations for Higher/Lower */
+@keyframes shimmerSweep {
+  0%   { transform: translateX(-100%) skewX(-20deg); opacity: 0.6; }
+  100% { transform: translateX(250%)  skewX(-20deg); opacity: 0; }
+}
+
+.shimmer_bar::after {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 40%; height: 100%;
+  background: linear-gradient(90deg, transparent, hsl(142,71%,70%,0.35), transparent);
+  animation: shimmerSweep 0.65s ease-in-out forwards;
+}
+
+@keyframes scorePop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.45); }
+  70%  { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+.score_pop {
+  animation: scorePop 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+}
+
+@keyframes backdropFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes panelSlideUp {
+  from { opacity: 0; transform: translateY(40px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+@keyframes titleFlicker {
+  0%,100% { opacity: 1; }
+  10%     { opacity: 0.2; }
+  20%     { opacity: 1; }
+  45%     { opacity: 0.4; }
+  55%     { opacity: 1; }
+}
+@keyframes itemFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.gameover_backdrop  { animation: backdropFade  0.3s ease forwards; }
+.gameover_panel     { animation: panelSlideUp  0.4s cubic-bezier(0.22,1,0.36,1) 0.1s both; }
+.gameover_title     { animation: titleFlicker  0.6s ease 0.4s both; }
+.gameover_score     { animation: itemFadeIn    0.4s ease 0.7s both; opacity: 0; }
+.gameover_message   { animation: itemFadeIn    0.4s ease 0.9s both; opacity: 0; }
+.gameover_button    { animation: itemFadeIn    0.4s ease 1.1s both; opacity: 0; }
