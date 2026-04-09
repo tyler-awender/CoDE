@@ -62,3 +62,116 @@
     @apply bg-background text-foreground;
   }
 }
+
+.profile-page {
+  min-height: 100vh;
+  background: #0b1f33;
+  color: white;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-card {
+  width: 100%;
+  max-width: 600px;
+  background: #102942;
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  margin-bottom: 30px;
+}
+
+.avatar-circle {
+  width: 90px;
+  height: 90px;
+  border-radius: 999px;
+  background: #2ec4b6;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: bold;
+  margin: 0 auto 20px;
+}
+
+.profile-username,
+.profile-email,
+.profile-date {
+  margin: 8px 0;
+  color: #d6e4f0;
+}
+
+.edit-section {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.edit-section label {
+  font-weight: 600;
+  text-align: left;
+}
+
+.edit-section input {
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+}
+
+.edit-section button {
+  background: #2ec4b6;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.edit-section button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.metrics-row {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.metric-card {
+  background: #102942;
+  border-radius: 16px;
+  padding: 24px;
+  width: 220px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.metric-card h2 {
+  margin: 0;
+  font-size: 36px;
+  color: #2ec4b6;
+}
+
+.metric-card p {
+  margin-top: 10px;
+  color: #d6e4f0;
+}
+
+.profile-link {
+  display: inline-block;
+  margin-top: 16px;
+  color: #2ec4b6;
+  text-decoration: none;
+  font-weight: 600;
+}

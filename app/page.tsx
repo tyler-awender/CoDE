@@ -1,154 +1,182 @@
-<<<<<<< HEAD
-import { Navbar } from "@/components/navbar";
-import Link from "next/link";
-import { Gamepad2, User, Trophy, MessageSquare } from "lucide-react";
-
-function FeatureCard({
-  href,
-  icon: Icon,
-  title,
-  description,
-}: {
-  href: string;
-  icon: React.ComponentType<{ className?: string; size?: number }>;
-  title: string;
-  description: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className="group rounded-lg border border-border/30 bg-card p-6 transition-all hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5"
-    >
-      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-md bg-muted">
-        <Icon
-          size={24}
-          className="text-primary transition-transform group-hover:scale-110"
-        />
-      </div>
-      <h3 className="mb-2 text-lg font-semibold text-foreground">{title}</h3>
-      <p className="text-sm text-muted-foreground">{description}</p>
-    </Link>
-  );
-}
-
-export default function Home() {
-  return (
-    <main className="min-h-screen flex flex-col">
-      <Navbar />
-
-      {/* Hero Section */}
-      <section className="flex flex-1 flex-col items-center justify-center px-5 py-20">
-        <div className="max-w-3xl text-center">
-          <h1 className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl">
-            Welcome to{" "}
-            <span className="text-primary">CoDE</span>
-          </h1>
-          <p className="mt-2 text-lg text-primary/80 font-medium">
-            Cove of Delightful Entertainment
-          </p>
-          <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-            Dive into an ocean of fun. Track your scores, climb the
-            leaderboard, and compete with friends.
-          </p>
-          <div className="mt-10 flex items-center justify-center gap-4">
-            <Link
-              href="/auth/sign-up"
-              className="rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
-            >
-              Get Started
-            </Link>
-            <Link
-              href="/auth/login"
-              className="rounded-md border border-border px-6 py-3 text-sm font-semibold text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
-            >
-              Sign In
-            </Link>
-          </div>
-        </div>
-
-        {/* Decorative divider */}
-        <div className="mt-16 w-full max-w-xl">
-          <div className="h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-        </div>
-      </section>
-
-      {/* Feature Cards */}
-      <section className="w-full max-w-6xl mx-auto px-5 pb-20">
-        <h2 className="mb-8 text-center text-2xl font-semibold text-foreground">
-          Explore the Cove
-        </h2>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <FeatureCard
-            href="/protected/games"
-            icon={Gamepad2}
-            title="Games"
-            description="Play our games."
-          />
-          <FeatureCard
-            href="/protected/profile"
-            icon={User}
-            title="Profile"
-            description="View your stats, customize your display name, and track your personal gaming metrics."
-          />
-          <FeatureCard
-            href="/protected/leaderboard"
-            icon={Trophy}
-            title="Leaderboard"
-            description="See how you stack up against other players. Compete for the top spot on the leaderboard."
-          />
-          <FeatureCard
-            href="/protected/forums"
-            icon={MessageSquare}
-            title="Forums"
-            description="Join the community discussion. Share strategies and connect with fellow gamers."
-          />
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="w-full border-t border-border/30 py-8">
-        <div className="mx-auto max-w-6xl px-5 flex flex-col items-center gap-2 text-xs text-muted-foreground sm:flex-row sm:justify-between">
-          <p>CoDE - Cove of Delightful Entertainment</p>
-          <p>CS 160, Section 02, Spring 2026 - Team #7</p>
-        </div>
-      </footer>
-=======
 "use client";
 
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import Link from "next/link";
 
-export default function Home() {
-  async function testConnection() {
-    const { data, error } = await supabase.from("users").select("*");
+type Profile = {
+  id: string;
+  email: string | null;
+  username: string;
+  display_name: string;
+  avatar_url: string | null;
+  created_at: string;
+};
+
+type MetricsRow = {
+  id: number;
+  user_id: string;
+  game_type: string;
+  score: number;
+  games_played: number;
+  streak: number;
+  created_at: string;
+};
+
+export default function ProfilePage() {
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [displayName, setDisplayName] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  const [totalGames, setTotalGames] = useState(0);
+  const [bestScore, setBestScore] = useState(0);
+  const [currentStreak, setCurrentStreak] = useState(0);
+
+  useEffect(() => {
+    async function loadProfile() {
+      setLoading(true);
+
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        setLoading(false);
+        return;
+      }
+
+      const { data: profileData, error: profileError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (profileError) {
+        console.error(profileError);
+        setLoading(false);
+        return;
+      }
+
+      setProfile(profileData);
+      setDisplayName(profileData.display_name || "");
+
+      const { data: metricsData, error: metricsError } = await supabase
+        .from("metrics")
+        .select("*")
+        .eq("user_id", user.id);
+
+      if (!metricsError && metricsData) {
+        const rows = metricsData as MetricsRow[];
+
+        setTotalGames(rows.length);
+
+        const maxScore =
+          rows.length > 0 ? Math.max(...rows.map((row) => row.score || 0)) : 0;
+        setBestScore(maxScore);
+
+        const maxStreak =
+          rows.length > 0 ? Math.max(...rows.map((row) => row.streak || 0)) : 0;
+        setCurrentStreak(maxStreak);
+      }
+
+      setLoading(false);
+    }
+
+    loadProfile();
+  }, []);
+
+  async function handleSave() {
+    if (!profile) return;
+
+    setSaving(true);
+
+    const { error } = await supabase
+      .from("users")
+      .update({ display_name: displayName })
+      .eq("id", profile.id);
 
     if (error) {
-      alert("Error: " + error.message);
-      console.log(error);
+      alert(error.message);
+      console.error(error);
     } else {
-      alert("Supabase connected successfully!");
-      console.log(data);
+      setProfile({ ...profile, display_name: displayName });
+      alert("Profile updated successfully!");
     }
+
+    setSaving(false);
+  }
+
+  if (loading) {
+    return (
+      <main className="profile-page">
+        <div className="profile-card">
+          <h1>Profile</h1>
+          <p>Loading...</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <main className="profile-page">
+        <div className="profile-card">
+          <h1>Profile</h1>
+          <p>You must be logged in to view this page.</p>
+          <Link href="/auth/login" className="profile-link">
+            Go to Login
+          </Link>
+        </div>
+      </main>
+    );
   }
 
   return (
-    <main style={{ minHeight: "100vh", padding: "40px", textAlign: "center" }}>
-      <h1>CoDE</h1>
-      <h2>Cove of Delightful Entertainment</h2>
-      <p>A web-based game platform for programmers.</p>
+    <main className="profile-page">
+      <div className="profile-card">
+        <div className="avatar-circle">
+          {profile.display_name?.charAt(0).toUpperCase() || "U"}
+        </div>
 
-      <button
-        onClick={testConnection}
-        style={{
-          marginTop: "20px",
-          padding: "12px 20px",
-          borderRadius: "8px",
-          border: "none",
-          cursor: "pointer",
-        }}
-      >
-        Test Supabase
-      </button>
->>>>>>> ee046fe (Connected Supabase to Next.js)
+        <h1>{profile.display_name}</h1>
+        <p className="profile-username">@{profile.username}</p>
+        <p className="profile-email">{profile.email}</p>
+        <p className="profile-date">
+          Joined: {new Date(profile.created_at).toLocaleDateString()}
+        </p>
+
+        <div className="edit-section">
+          <label>Edit Display Name</label>
+          <input
+            type="text"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            placeholder="Enter new display name"
+          />
+          <button onClick={handleSave} disabled={saving}>
+            {saving ? "Saving..." : "Save"}
+          </button>
+        </div>
+      </div>
+
+      <div className="metrics-row">
+        <div className="metric-card">
+          <h2>{totalGames}</h2>
+          <p>Total Games</p>
+        </div>
+
+        <div className="metric-card">
+          <h2>{bestScore}</h2>
+          <p>Best Score</p>
+        </div>
+
+        <div className="metric-card">
+          <h2>{currentStreak}</h2>
+          <p>Current Streak</p>
+        </div>
+      </div>
     </main>
   );
 }
