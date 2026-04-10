@@ -25,19 +25,19 @@ export function Navbar() {
             Home
           </Link>
           <Link
-            href="/protected"
+            href="/protected/games"
             className="text-muted-foreground hover:text-primary transition-colors"
           >
             Games
           </Link>
           <Link
-            href="/protected"
+            href="/protected/profile"
             className="text-muted-foreground hover:text-primary transition-colors"
           >
             Profile
           </Link>
           <Link
-            href="/protected"
+            href="/protected/leaderboard"
             className="text-muted-foreground hover:text-primary transition-colors"
           >
             Leaderboard

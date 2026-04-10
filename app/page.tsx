@@ -78,25 +78,25 @@ export default function Home() {
         </h2>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <FeatureCard
-            href="/protected"
+            href="/protected/games"
             icon={Gamepad2}
             title="Games"
             description="Play our games."
           />
           <FeatureCard
-            href="/protected"
+            href="/protected/profile"
             icon={User}
             title="Profile"
             description="View your stats, customize your display name, and track your personal gaming metrics."
           />
           <FeatureCard
-            href="/protected"
+            href="/protected/leaderboard"
             icon={Trophy}
             title="Leaderboard"
             description="See how you stack up against other players. Compete for the top spot on the leaderboard."
           />
           <FeatureCard
-            href="/protected"
+            href="/protected/forums"
             icon={MessageSquare}
             title="Forums"
             description="Join the community discussion. Share strategies and connect with fellow gamers."
