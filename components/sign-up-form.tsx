@@ -11,6 +11,7 @@ export default function SignUpForm() {
   const [repeatPassword, setRepeatPassword] = useState("");
   const [username, setUsername] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function handleSignUp(e: React.FormEvent) {
     e.preventDefault();
@@ -25,40 +26,34 @@ export default function SignUpForm() {
       return;
     }
 
-    const { data, error } = await supabase.auth.signUp({
+    setLoading(true);
+
+    const { error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          username: username.trim(),
+          display_name: displayName.trim(),
+        },
+      },
     });
 
+    setLoading(false);
+
     if (error) {
+      console.error("Sign up error:", error);
       alert(error.message);
       return;
     }
 
-    const user = data.user;
+    alert("Account created! Check your email if confirmation is required.");
 
-    if (!user) {
-      alert("User not created");
-      return;
-    }
-
-    const { error: insertError } = await supabase.from("users").insert({
-      id: user.id,
-      email: user.email,
-      username: username.trim(),
-      display_name: displayName.trim(),
-      avatar_url: null,
-    });
-
-    if (insertError) {
-      console.error("Full Insert error:", insertError);
-      alert(`Database error: ${insertError.message}`);
-      return;
-    }
-
-    
-
-    alert("Account created!");
+    setEmail("");
+    setPassword("");
+    setRepeatPassword("");
+    setUsername("");
+    setDisplayName("");
   }
 
   return (
@@ -108,9 +103,10 @@ export default function SignUpForm() {
 
       <button
         type="submit"
-        className="rounded bg-teal-600 text-white px-4 py-2"
+        disabled={loading}
+        className="rounded bg-teal-600 text-white px-4 py-2 disabled:opacity-60"
       >
-        Sign up
+        {loading ? "Creating..." : "Sign up"}
       </button>
     </form>
   );
