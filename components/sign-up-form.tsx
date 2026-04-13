@@ -1,5 +1,6 @@
 "use client";
 
+
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
@@ -66,7 +67,7 @@ export default function SignUpForm() {
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="border rounded px-3 py-2"
+        className="border rounded px-3 py-2 bg-slate-800 text-white placeholder-gray-400"
       />
 
       <input
@@ -74,7 +75,7 @@ export default function SignUpForm() {
         placeholder="Username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-        className="border rounded px-3 py-2"
+        className="border rounded px-3 py-2 bg-slate-800 text-white placeholder-gray-400"
       />
 
       <input
@@ -82,7 +83,7 @@ export default function SignUpForm() {
         placeholder="Display Name"
         value={displayName}
         onChange={(e) => setDisplayName(e.target.value)}
-        className="border rounded px-3 py-2"
+        className="border rounded px-3 py-2 bg-slate-800 text-white placeholder-gray-400"
       />
 
       <input
@@ -90,7 +91,7 @@ export default function SignUpForm() {
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className="border rounded px-3 py-2"
+        className="border rounded px-3 py-2 bg-slate-800 text-white placeholder-gray-400"
       />
 
       <input
@@ -98,7 +99,7 @@ export default function SignUpForm() {
         placeholder="Repeat Password"
         value={repeatPassword}
         onChange={(e) => setRepeatPassword(e.target.value)}
-        className="border rounded px-3 py-2"
+        className="border rounded px-3 py-2 bg-slate-800 text-white placeholder-gray-400"
       />
 
       <button

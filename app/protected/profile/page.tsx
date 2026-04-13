@@ -1,48 +1,119 @@
-import { createClient } from "@/lib/supabase/server";
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import EditDisplayNameForm from "@/components/edit-display-name-form";
 
-export default async function ProfilePage() {
+function ProfileFallback() {
+  return (
+    <section className="px-6 py-10 text-white">
+      <div className="text-center mb-10">
+        <h1 className="text-4xl font-bold">Profile</h1>
+        <p className="text-slate-400 mt-2">Loading profile...</p>
+      </div>
+    </section>
+  );
+}
+
+async function ProfileContent() {
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.getClaims();
 
-  if (error || !data?.claims) {
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  if (error || !user) {
     redirect("/auth/login");
   }
 
-  const user = data.claims;
+  const { data: profile, error: profileError } = await supabase
+    .from("users")
+    .select("id, username, display_name, email, created_at")
+    .eq("id", user.id)
+    .single();
+
+  if (profileError || !profile) {
+    redirect("/auth/login");
+  }
+
+  const { data: metrics } = await supabase
+    .from("metrics")
+    .select("score, streak, games_played")
+    .eq("user_id", user.id);
+
+  const rows = metrics ?? [];
+
+  const totalGames = rows.reduce(
+    (sum, item) => sum + (item.games_played ?? 1),
+    0
+  );
+
+  const bestScore =
+    rows.length > 0 ? Math.max(...rows.map((m) => m.score ?? 0)) : 0;
+
+  const streak =
+    rows.length > 0 ? Math.max(...rows.map((m) => m.streak ?? 0)) : 0;
 
   return (
-    <div className="flex flex-col gap-8">
-      <section className="rounded-2xl border border-border/30 bg-card/60 p-8">
-        <p className="text-sm font-medium uppercase tracking-[0.2em] text-primary/80">
-          Profile
+    <section className="px-6 py-10 text-white">
+      <div className="text-center mb-10">
+        <h1 className="text-4xl font-bold">Profile</h1>
+        <p className="text-slate-400 mt-2">
+          View your profile and game stats
         </p>
-        <h1 className="mt-3 text-4xl font-bold tracking-tight text-foreground">
-          Account overview
-        </h1>
-        <p className="mt-4 max-w-2xl text-muted-foreground">
-          This page is wired to your authenticated session, so it can be
-          expanded later with stats, preferences, and saved progress.
-        </p>
-      </section>
+      </div>
 
-      <section className="rounded-xl border border-border/30 bg-card p-6">
-        <h2 className="text-xl font-semibold text-foreground">Current user</h2>
-        <dl className="mt-6 grid gap-4 sm:grid-cols-2">
-          <div className="rounded-lg border border-border/30 bg-background/40 p-4">
-            <dt className="text-sm text-muted-foreground">Email</dt>
-            <dd className="mt-1 text-base font-medium text-foreground">
-              {user.email ?? "Unavailable"}
-            </dd>
-          </div>
-          <div className="rounded-lg border border-border/30 bg-background/40 p-4">
-            <dt className="text-sm text-muted-foreground">User ID</dt>
-            <dd className="mt-1 break-all text-base font-medium text-foreground">
-              {user.sub}
-            </dd>
-          </div>
-        </dl>
-      </section>
-    </div>
+      <div className="bg-slate-900 rounded-2xl shadow-lg p-6 w-full max-w-md mx-auto mb-10">
+        <h2 className="text-2xl font-bold mb-4">{profile.display_name}</h2>
+
+        <div className="space-y-2 text-slate-300">
+          <p>
+            <span className="font-semibold text-white">Username:</span> @{profile.username}
+          </p>
+          <p>
+            <span className="font-semibold text-white">Email:</span> {profile.email}
+          </p>
+          <p>
+            <span className="font-semibold text-white">Display Name:</span> {profile.display_name}
+          </p>
+          <p>
+            <span className="font-semibold text-white">Joined At:</span>{" "}
+            {new Date(profile.created_at).toLocaleDateString()}
+          </p>
+        </div>
+
+        <div className="mt-6">
+          <EditDisplayNameForm
+            userId={profile.id}
+            currentDisplayName={profile.display_name}
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
+        <div className="bg-slate-900 shadow rounded-xl p-6 text-center">
+          <h2 className="text-3xl font-bold text-teal-400">{bestScore}</h2>
+          <p className="text-slate-400 mt-1">Best Score</p>
+        </div>
+
+        <div className="bg-slate-900 shadow rounded-xl p-6 text-center">
+          <h2 className="text-3xl font-bold text-teal-400">{streak}</h2>
+          <p className="text-slate-400 mt-1">Streak</p>
+        </div>
+
+        <div className="bg-slate-900 shadow rounded-xl p-6 text-center">
+          <h2 className="text-3xl font-bold text-teal-400">{totalGames}</h2>
+          <p className="text-slate-400 mt-1">Games Played</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={<ProfileFallback />}>
+      <ProfileContent />
+    </Suspense>
   );
 }

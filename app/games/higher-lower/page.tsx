@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/navbar";
 import { HigherLower } from "@/components/games/higher-lower";
 
+
 export default function Page() {
   return (
     <main className="min-h-screen flex flex-col">
