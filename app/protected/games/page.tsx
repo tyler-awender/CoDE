@@ -31,7 +31,7 @@ export default function GamesPage() {
       </Link>
 
       <Link
-        href="/games/scrambled-algorithm"
+        href="/games/scrambled-algorithms"
         className="rounded-xl border border-border/30 bg-card p-6 transition-all hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5"
       >
         <p className="text-sm font-medium uppercase tracking-[0.2em] text-primary/80">
