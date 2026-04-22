@@ -7,11 +7,17 @@ export default function AdminPanel() {
   useEffect(() => {
     const fetchData = async () => {
       const supabase = await createClient();
-      const { data: daily_games_played, error } = await supabase.rpc('get_daily_games_played');
+      const { data: daily_games_played } = await supabase.rpc('get_daily_games_played');
+      const { data: daily_active_users } = await supabase.rpc('get_daily_active_users');
       const d_games = document.getElementById('daily_games');
+      const a_users = document.getElementById('active_users');
 
         if (d_games) {
           d_games.innerText = daily_games_played as string;
+        }
+
+        if (a_users) {
+          a_users.innerText = daily_active_users as string;
         }
     }
     fetchData(); 
@@ -36,9 +42,9 @@ export default function AdminPanel() {
 
         <div className="rounded-2xl border border-border/30 bg-card p-6 flex flex-col gap-3">
           <h2 className="text-lg font-semibold">Daily Active Users</h2>
-          <p className="text-3xl font-bold">—</p>
+          <p id="active_users" className="text-3xl font-bold">—</p>
           <p className="text-sm text-muted-foreground">
-            Unique users who visited the site in the last 24 hours.
+            Unique users who have played a game in the last 24 hours.
           </p>
         </div>
 
@@ -63,7 +69,7 @@ export default function AdminPanel() {
       <section className="rounded-2xl border border-dashed border-border/40 bg-card p-6">
         <h2 className="text-lg font-semibold">Trends</h2>
         <p className="text-sm text-muted-foreground mt-2">
-          This section graphs DAU, streak distribution, and games played over time.
+          This section graphs games played over time.
         </p>
 
         <div className="mt-6 h-40 flex items-center justify-center text-muted-foreground text-sm">
