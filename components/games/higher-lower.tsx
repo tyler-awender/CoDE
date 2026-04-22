@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/client";
 import { useState, useEffect } from "react";
 import styles from './higher-lower.module.css';
+import { createGameEntry } from '@/lib/create-game-entry';
 
 export function HigherLower() {
   const [started, setStarted] = useState(false);
@@ -106,6 +107,7 @@ export function HigherLower() {
       setGameOver(true);
       await new Promise(r => setTimeout(r, 175));
       incorrect_audio.play();
+      await createGameEntry('higher-lower', score);
     }
   }
 
