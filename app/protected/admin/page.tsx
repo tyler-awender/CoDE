@@ -1,14 +1,16 @@
 import { createClient } from "@/lib/supabase/server";
 import { Suspense } from 'react';
+import LineChart from './chart'
 
 async function Dashboard() {
   const supabase = await createClient();
   const { data: daily_games_played } = await supabase.rpc('get_daily_games_played');
   const { data: daily_active_users } = await supabase.rpc('get_daily_active_users');
   const { data: streaks } = await supabase.rpc('get_streaks');
+  const { data: graph } = await supabase.rpc('get_past_ten_daily_games');
+  const { data: c } = await supabase.auth.getClaims();
 
-  const { data } = await supabase.auth.getClaims();
-  const user = data?.claims;
+  const user = c?.claims;
 
   const { data: profile } = await supabase
       .from("users")
@@ -62,13 +64,10 @@ async function Dashboard() {
           </section>
 
           <section className="rounded-2xl border border-dashed border-border/40 bg-card p-6">
-            <h2 className="text-lg font-semibold">Trends</h2>
-            <p className="text-sm text-muted-foreground mt-2">
-              This section graphs games played over time.
-            </p>
+            <h2 className="text-2xl font-semibold">Games Played Chart</h2>
 
-            <div className="mt-6 h-40 flex items-center justify-center text-muted-foreground text-sm">
-              placeholder
+            <div className="mt-6 h-60 flex items-center justify-center text-muted-foreground text-sm">
+              <LineChart data={graph} />
             </div>
           </section>
 
