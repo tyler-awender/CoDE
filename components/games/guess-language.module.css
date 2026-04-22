@@ -1,0 +1,71 @@
+@keyframes scorePop {
+  0% {
+    transform: scale(1);
+  }
+
+  40% {
+    transform: scale(1.35);
+  }
+
+  70% {
+    transform: scale(0.92);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 0 rgba(34, 211, 238, 0);
+  }
+
+  50% {
+    box-shadow: 0 0 28px rgba(34, 211, 238, 0.35);
+  }
+
+  100% {
+    box-shadow: 0 0 0 rgba(34, 211, 238, 0);
+  }
+}
+
+@keyframes panelRise {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.score_pop {
+  animation: scorePop 0.38s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+}
+
+.question_shell {
+  animation: fadeInUp 0.45s ease both;
+}
+
+.correct_flash {
+  animation: pulseGlow 0.55s ease;
+}
+
+.summary_panel {
+  animation: panelRise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}

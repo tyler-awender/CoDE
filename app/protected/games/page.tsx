@@ -71,6 +71,21 @@ export default function GamesPage() {
             Guess the hidden boolean expression using logic and truth tables.
           </p>
         </Link>
+
+        <Link
+          href="/games/guess-language"
+          className="rounded-xl border border-border/30 bg-card p-6 transition-all hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5"
+        >
+          <p className="text-sm font-medium uppercase tracking-[0.2em] text-primary/80">
+            Available Now
+          </p>
+          <h2 className="mt-3 text-2xl font-semibold text-foreground">
+            Guess the Programming Language
+          </h2>
+          <p className="mt-3 max-w-2xl text-muted-foreground">
+            Study a code snippet, read the syntax, and identify the language.
+          </p>
+        </Link>
       </div>
     </div>
   );
