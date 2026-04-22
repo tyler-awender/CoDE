@@ -9,8 +9,10 @@ export default function AdminPanel() {
       const supabase = await createClient();
       const { data: daily_games_played } = await supabase.rpc('get_daily_games_played');
       const { data: daily_active_users } = await supabase.rpc('get_daily_active_users');
+      const { data: streaks } = await supabase.rpc('get_streaks');
       const d_games = document.getElementById('daily_games');
       const a_users = document.getElementById('active_users');
+      const s = document.getElementById('streaks');
 
         if (d_games) {
           d_games.innerText = daily_games_played as string;
@@ -18,6 +20,10 @@ export default function AdminPanel() {
 
         if (a_users) {
           a_users.innerText = daily_active_users as string;
+        }
+
+        if (s) {
+          s.innerText = streaks as string;
         }
     }
     fetchData(); 
@@ -50,7 +56,7 @@ export default function AdminPanel() {
 
         <div className="rounded-2xl border border-border/30 bg-card p-6 flex flex-col gap-3">
           <h2 className="text-lg font-semibold">User Streaks</h2>
-          <p className="text-3xl font-bold">—</p>
+          <p id="streaks" className="text-3xl font-bold">—</p>
           <p className="text-sm text-muted-foreground">
             Tracks how many consecutive days users play at least one game.
           </p>

@@ -16,10 +16,17 @@ export async function createGameEntry(game_name: string, score: number) {
         return false;
     }
 
-    const { error: error2 } = await  supabase.rpc('update_last_seen', {player: uuid});
+    const { error: error2 } =  await supabase.rpc('update_streak', {player: uuid});
     if (error2) {
+        console.error("Couldn't update daily streak");
+        return false;
+    }
+
+    const { error: error3 } = await supabase.rpc('update_last_seen', {player: uuid});
+    if (error3) {
         console.error("Couldn't update last seen");
         return false;
     }
+
     return true;
 }
