@@ -284,7 +284,7 @@ export function GuessLanguage() {
   }
 
   return (
-    <div className="flex-1 rounded-md border border-border bg-card text-muted-foreground overflow-hidden w-full">
+    <div className="rounded-md border border-border bg-card text-muted-foreground overflow-hidden w-full">
       <div className="grid h-full gap-0 lg:grid-cols-[1.15fr_0.85fr]">
         <section className="flex flex-col border-b border-border/50 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.1),transparent_38%),linear-gradient(180deg,rgba(6,23,38,0.98),rgba(8,18,31,0.96))] p-6 lg:border-b-0 lg:border-r">
           <div className="flex items-center justify-between gap-4">
