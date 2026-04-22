@@ -20,58 +20,87 @@ export function SignUpForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const [displayName, setDisplayName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
-  const [username, setUsername] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+  
     const supabase = createClient();
-    setIsLoading(true);
-    setError(null);
-
+    setLoading(true);
+  
     if (password !== repeatPassword) {
-      setError("Passwords do not match");
-      setIsLoading(false);
+      router.push("/auth/error");
+      setLoading(false);
       return;
     }
-
-    if (!username.trim()) {
-      setError("Username is required");
-      setIsLoading(false);
-      return;
-    }
-
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters");
-      setIsLoading(false);
-      return;
-    }
-
+  
     try {
+      const cleanEmail = email.trim().toLowerCase();
+      const cleanUsername = username.trim().toLowerCase();
+  
+      // check username
+      const { data: usernameCheck, error: usernameError } = await supabase
+        .from("users")
+        .select("id")
+        .ilike("username", cleanUsername)
+        .maybeSingle();
+  
+      if (usernameError) throw usernameError;
+  
+      if (usernameCheck) {
+        router.push("/auth/error");
+        setLoading(false);
+        return;
+      }
+  
+      // check email
+      const { data: emailCheck, error: emailError } = await supabase
+        .from("users")
+        .select("id")
+        .ilike("email", cleanEmail)
+        .maybeSingle();
+  
+      if (emailError) throw emailError;
+  
+      if (emailCheck) {
+        router.push("/auth/error");
+        setLoading(false);
+        return;
+      }
+  
       const { error } = await supabase.auth.signUp({
-        email,
+        email: cleanEmail,
         password,
         options: {
-          data: { username: username.trim() }, // ← trigger reads this
+          data: {
+            username: cleanUsername,
+            display_name: displayName.trim(),
+          },
           emailRedirectTo: `${window.location.origin}/protected`,
         },
       });
-
-      if (error) throw error;
-
+  
+      if (error) {
+        router.push("/auth/error");
+        setLoading(false);
+        return;
+      }
+  
       router.push("/auth/sign-up-success");
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
+    } catch {
+      router.push("/auth/error");
     }
+  
+    setLoading(false);
   };
-
+  
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -79,69 +108,72 @@ export function SignUpForm({
           <CardTitle className="text-2xl">Sign up</CardTitle>
           <CardDescription>Create a new account</CardDescription>
         </CardHeader>
+
         <CardContent>
           <form onSubmit={handleSignUp}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="username">Username</Label>
+                <Label>Display Name</Label>
                 <Input
-                  id="username"
-                  type="text"
-                  placeholder="yourusername"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder="Your Name"
                   required
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label>Username</Label>
+                <Input
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Username"
+                  required
                 />
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+                <Label>Email</Label>
                 <Input
-                  id="email"
                   type="email"
-                  placeholder="m@example.com"
-                  required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
+                  required
                 />
               </div>
 
               <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                </div>
+                <Label>Password</Label>
                 <Input
-                  id="password"
                   type="password"
-                  required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
               </div>
 
               <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="repeat-password">Repeat Password</Label>
-                </div>
+                <Label>Repeat Password</Label>
                 <Input
-                  id="repeat-password"
                   type="password"
-                  required
                   value={repeatPassword}
                   onChange={(e) => setRepeatPassword(e.target.value)}
+                  required
                 />
               </div>
 
-              {error && <p className="text-sm text-red-500">{error}</p>}
-
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Creating an account..." : "Sign up"}
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "Creating..." : "Sign up"}
               </Button>
             </div>
 
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}
-              <Link href="/auth/login" className="underline underline-offset-4">
+              <Link
+                href="/auth/login"
+                className="underline underline-offset-4"
+              >
                 Login
               </Link>
             </div>
@@ -151,3 +183,4 @@ export function SignUpForm({
     </div>
   );
 }
+
