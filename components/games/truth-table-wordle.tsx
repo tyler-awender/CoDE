@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { createGameEntry } from "@/lib/create-game-entry";
+
 type Row = {
   A: boolean;
   B: boolean;
@@ -150,6 +152,7 @@ export function TruthTableWordle() {
       setWon(true);
       setGameOver(true);
       setMessage("Correct! You solved it.");
+      createGameEntry('truth-table-wordle', guesses.length + 1);
       return;
     }
 

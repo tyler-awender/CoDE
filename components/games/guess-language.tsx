@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react";
 import { Binary, Flame } from "lucide-react";
 
+import { createGameEntry } from "@/lib/create-game-entry";
+
 import styles from "./guess-language.module.css";
 
 type LanguageQuestion = {
@@ -165,6 +167,7 @@ export function GuessLanguage() {
 
       if (isLastQuestion) {
         setFinished(true);
+        createGameEntry('guess-the-prog-lang', score);
         return;
       }
 
