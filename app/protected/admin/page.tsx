@@ -1,4 +1,21 @@
+'use client';
+
+import { createClient } from "@/lib/supabase/client";
+import { useEffect } from 'react';
+
 export default function AdminPanel() {
+  useEffect(() => {
+    const fetchData = async () => {
+      const supabase = await createClient();
+      const { data: daily_games_played, error } = await supabase.rpc('get_daily_games_played');
+      const d_games = document.getElementById('daily_games');
+
+        if (d_games) {
+          d_games.innerText = daily_games_played as string;
+        }
+    }
+    fetchData(); 
+  })
   return (
     <div className="flex flex-col gap-8 p-6 md:p-10">
 
@@ -35,7 +52,7 @@ export default function AdminPanel() {
 
         <div className="rounded-2xl border border-border/30 bg-card p-6 flex flex-col gap-3">
           <h2 className="text-lg font-semibold">Games Played</h2>
-          <p className="text-3xl font-bold">—</p>
+          <p id="daily_games" className="text-3xl font-bold">—</p>
           <p className="text-sm text-muted-foreground">
             Total number of completed games across the platform in a 24-hour period.
           </p>
