@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { algorithms, languages, type Language } from "@/lib/algorithms";
 
+import { createGameEntry } from '@/lib/create-game-entry';
+
 interface CodeLine {
   id: number;
   text: string;
@@ -64,6 +66,7 @@ export function ScrambledAlgorithms() {
 
     const solved = lines.every((line, index) => line.originalIndex === index);
     if (solved) {
+      createGameEntry('scrambled-algs', moves);
       setIsSolved(true);
     }
   }, [lines]);
