@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/server";
 async function AdminLink() {
       const supabase = await createClient();
 
-      const { data, error } = await supabase.auth.getClaims();
+      const { data } = await supabase.auth.getClaims();
       const user = data?.claims;
 
       const { data: profile } = await supabase
@@ -69,6 +69,12 @@ export function Navbar() {
             className="text-muted-foreground hover:text-primary transition-colors"
           >
             Leaderboard
+          </Link>
+          <Link
+            href="/protected/forums"
+            className="text-muted-foreground hover:text-primary transition-colors"
+          >
+            Forums
           </Link>
           <Suspense fallback={null}>
                 <AdminLink/>
