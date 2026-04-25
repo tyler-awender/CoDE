@@ -17,7 +17,7 @@ type LeaderboardEntry = {
   rank: number;
   display_name: string;
   username: string;
-  best_score: number;
+  avg_score: string;
   plays: number;
 };
 
@@ -79,7 +79,7 @@ async function LeaderboardContent({
           Game Rankings
         </h1>
         <p className="max-w-2xl text-muted-foreground">
-          Simple game-specific rankings based on each player&apos;s best score.
+          Game-specific rankings based on each player&apos;s average score.
         </p>
       </header>
 
@@ -113,7 +113,7 @@ async function LeaderboardContent({
           <h2 className="text-lg font-semibold">Total Plays</h2>
           <p className="text-3xl font-bold">{gameMetrics.plays}</p>
           <p className="text-sm text-muted-foreground">
-            Completed runs for {selectedGameLabel}.
+            Completed runs for <b>{selectedGameLabel}</b>.
           </p>
         </div>
 
@@ -121,7 +121,7 @@ async function LeaderboardContent({
           <h2 className="text-lg font-semibold">Unique Players</h2>
           <p className="text-3xl font-bold">{gameMetrics.unique_players}</p>
           <p className="text-sm text-muted-foreground">
-            Distinct players recorded in this game.
+            Distinct users who have played this game.
           </p>
         </div>
 
@@ -129,7 +129,7 @@ async function LeaderboardContent({
           <h2 className="text-lg font-semibold">Top Score</h2>
           <p className="text-3xl font-bold">{gameMetrics.top_score}</p>
           <p className="text-sm text-muted-foreground">
-            Highest score submitted for this game.
+            Best score recorded for this game.
           </p>
         </div>
       </section>
@@ -146,23 +146,26 @@ async function LeaderboardContent({
             <table className="w-full min-w-[36rem] border-collapse text-left text-sm">
               <thead>
                 <tr className="border-b border-border/40 text-muted-foreground">
-                  <th className="px-3 py-2 font-medium">Rank</th>
-                  <th className="px-3 py-2 font-medium">Player</th>
-                  <th className="px-3 py-2 font-medium">Username</th>
-                  <th className="px-3 py-2 font-medium">Best Score</th>
-                  <th className="px-3 py-2 font-medium">Plays</th>
+                  <th className="px-3 py-2 font-bold">Rank</th>
+                  <th className="px-3 py-2 font-bold">Display Name</th>
+                  <th className="px-3 py-2 font-bold">Username</th>
+                  <th className="px-3 py-2 font-bold">Average Score</th>
+                  <th className="px-3 py-2 font-bold">Plays</th>
                 </tr>
               </thead>
               <tbody>
                 {leaderboard.map((entry) => (
-                  <tr key={`${entry.rank}-${entry.username}-${entry.display_name}`} className="border-b border-border/20 last:border-b-0">
-                    <td className="px-3 py-3 font-semibold">#{entry.rank}</td>
-                    <td className="px-3 py-3">{entry.display_name}</td>
-                    <td className="px-3 py-3 text-muted-foreground">
+                  <tr
+                    key={`${entry.rank}-${entry.username}-${entry.display_name}`}
+                    className="border-b border-border/20 last:border-b-0 odd:bg-muted/20 even:bg-transparent"
+                  >
+                    <td className="px-3 py-3 font-medium text-muted-foreground">#{entry.rank}</td>
+                    <td className="px-3 py-3 font-semibold text-primary">{entry.display_name}</td>
+                    <td className="px-3 py-3 font-medium">
                       {entry.username || "-"}
                     </td>
-                    <td className="px-3 py-3 font-semibold">{entry.best_score}</td>
-                    <td className="px-3 py-3">{entry.plays}</td>
+                    <td className="px-3 py-3 font-bold">{entry.avg_score}</td>
+                    <td className="px-3 py-3 font-semibold">{entry.plays}</td>
                   </tr>
                 ))}
               </tbody>
