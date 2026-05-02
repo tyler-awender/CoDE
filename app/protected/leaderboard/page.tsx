@@ -79,7 +79,7 @@ async function LeaderboardContent({
           Game Rankings
         </h1>
         <p className="max-w-2xl text-muted-foreground">
-          Game-specific rankings based on each player&apos;s average score.
+          Game-specific rankings ordered by each player&apos;s average score.
         </p>
       </header>
 

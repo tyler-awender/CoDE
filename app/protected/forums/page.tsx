@@ -33,8 +33,8 @@ function ForumsFallback() {
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-8">
       <section>
-        <h1 className="text-2xl font-semibold text-foreground">Forum</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Loading forum...</p>
+        <h1 className="text-2xl font-semibold text-foreground">Forums</h1>
+        <p className="mt-2 text-sm text-muted-foreground">Loading forums...</p>
       </section>
     </div>
   );
@@ -86,9 +86,9 @@ async function ForumsContent() {
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-8">
       <section>
-        <h1 className="text-2xl font-semibold text-foreground">Forum</h1>
+        <h1 className="text-2xl font-semibold text-foreground">Forums</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Welcome to the forum!
+          Welcome to the forums!
         </p>
       </section>
 

@@ -81,13 +81,13 @@ export default function Home() {
             href="/protected/games"
             icon={Gamepad2}
             title="Games"
-            description="Play our games."
+            description="Browse playable games and dive straight into the fun."
           />
           <FeatureCard
             href="/protected/profile"
             icon={User}
             title="Profile"
-            description="View your stats, customize your display name, and track your personal gaming metrics."
+            description="View your personal details and change your display name."
           />
           <FeatureCard
             href="/protected/leaderboard"

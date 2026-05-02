@@ -13,7 +13,7 @@ export default function GamesPage() {
         </h1>
 
         <p className="mt-4 max-w-2xl text-muted-foreground">
-          Pick from live games focused on code intuition and quick decisions.
+          Pick from a series of games focused on programming knowledge and code intuition.
         </p>
       </section>
 
