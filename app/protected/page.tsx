@@ -37,11 +37,11 @@ export default function ProtectedPage() {
           Dashboard
         </p>
         <h1 className="mt-3 text-4xl font-bold tracking-tight text-foreground">
-          Welcome back to CoDE
+          Welcome back to <span className="text-primary">CoDE</span>
         </h1>
         <p className="mt-4 max-w-2xl text-muted-foreground">
-          You are signed in. Pick a destination below to jump into a game,
-          check your profile, or see what is coming next.
+          You've successfully signed in. Pick a destination below to jump into a game,
+          view your profile, or check the leaderboards.
         </p>
       </section>
 
@@ -50,25 +50,25 @@ export default function ProtectedPage() {
           href="/protected/games"
           icon={Gamepad2}
           title="Games"
-          description="Browse playable games and jump into Higher/Lower."
+          description="Browse playable games and dive right into the fun."
         />
         <QuickLink
           href="/protected/profile"
           icon={User}
           title="Profile"
-          description="View your account details and personal activity."
+          description="View and change your account details."
         />
         <QuickLink
           href="/protected/leaderboard"
           icon={Trophy}
-          title="Leaderboard"
-          description="See where you stand once leaderboard support is wired up."
+          title="Leaderboards"
+          description="See where you stand amongst other players."
         />
         <QuickLink
           href="/protected/forums"
           icon={MessageSquare}
           title="Forums"
-          description="Community discussion is planned here."
+          description="Share your thoughts with the community."
         />
       </section>
     </div>

@@ -53,8 +53,7 @@ async function ProfileContent() {
         </h1>
 
         <p className="mt-4 max-w-2xl text-muted-foreground">
-          This page is wired to your authenticated session, so it can be
-          expanded later with stats, preferences, and saved progress.
+          This page shows your display name, join date, and other personal information.
         </p>
       </section>
 
@@ -102,7 +101,7 @@ async function ProfileContent() {
         </h2>
 
         <p className="mt-2 text-sm text-muted-foreground">
-          Update how your name appears on your profile.
+          Update how you appear across the platform.
         </p>
 
         <div className="mt-3">
