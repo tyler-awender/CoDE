@@ -1,6 +1,14 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
 import ForumPostForm from "@/components/forum-post-form";
 import { createClient } from "@/lib/supabase/server";
 
@@ -93,47 +101,58 @@ async function ForumsContent() {
       </section>
 
       <section>
-        <h2 className="text-base font-medium text-foreground">New post</h2>
-        <div className="mt-4">
-          <ForumPostForm authorDisplayName={authorDisplayName} />
-        </div>
+        <ForumPostForm authorDisplayName={authorDisplayName} />
       </section>
 
       <section>
-        <div className="flex items-center justify-between gap-4">
-          <h2 className="text-base font-medium text-foreground">Posts</h2>
-          <p className="text-sm text-muted-foreground">{forumPosts.length}</p>
-        </div>
-
         {postsError ? (
           <p className="mt-4 text-sm text-red-400">
             Run sql setup on supabase!
           </p>
         ) : forumPosts.length === 0 ? (
-          <div className="mt-4 border border-border px-4 py-3 text-sm text-muted-foreground">
-            No posts yet. Be the first to start the conversation.
-          </div>
+          <Card className="mt-4">
+            <CardContent className="py-6 text-center text-sm text-muted-foreground">
+              No posts yet. Be the first to start the conversation.
+            </CardContent>
+          </Card>
         ) : (
-          <div className="mt-4 border border-border">
-            {forumPosts.map((post) => (
-              <article
-                key={post.id}
-                className="border-b border-border px-4 py-3 last:border-b-0"
-              >
-                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                  <h3 className="text-sm font-medium text-foreground">
-                    {authorsById.get(post.user_id) ?? post.author_display_name}
-                  </h3>
-                  <p className="text-xs text-muted-foreground">
-                    {formatTimestamp(post.created_at)}
-                  </p>
-                </div>
-                <p className="mt-2 whitespace-pre-wrap text-sm text-foreground">
-                  {post.content}
-                </p>
-              </article>
-            ))}
-          </div>
+          <Card className="mt-4">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-lg">Posts</CardTitle>
+                <CardDescription>
+                  See what others are saying
+                </CardDescription>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {forumPosts.length}
+              </p>
+            </CardHeader>
+
+            <CardContent>
+              <div className="flex flex-col gap-4">
+                {forumPosts.map((post) => (
+                  <article
+                    key={post.id}
+                    className="rounded-md border border-border bg-background p-4"
+                  >
+                    <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                      <h3 className="text-sm font-medium text-foreground">
+                        {authorsById.get(post.user_id) ?? post.author_display_name}
+                      </h3>
+                      <p className="text-xs text-muted-foreground">
+                        {formatTimestamp(post.created_at)}
+                      </p>
+                    </div>
+
+                    <p className="mt-2 whitespace-pre-wrap text-sm text-foreground leading-relaxed">
+                      {post.content}
+                    </p>
+                  </article>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         )}
       </section>
     </div>
