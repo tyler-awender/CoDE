@@ -137,7 +137,7 @@ async function ForumsContent() {
                     className="rounded-md border border-border bg-background p-4"
                   >
                     <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                      <h3 className="text-sm font-medium text-foreground">
+                      <h3 className="text-sm font-bold text-foreground">
                         {authorsById.get(post.user_id) ?? post.author_display_name}
                       </h3>
                       <p className="text-xs text-muted-foreground">
