@@ -3,6 +3,16 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+
 import { createClient } from "@/lib/supabase/client";
 
 const MAX_POST_LENGTH = 500;
@@ -59,27 +69,54 @@ export default function ForumPostForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl">Create Post</CardTitle>
+          <CardDescription>
+            Share something with the community
+          </CardDescription>
+        </CardHeader>
 
-      <textarea
-        value={content}
-        onChange={(event) => setContent(event.target.value.slice(0, MAX_POST_LENGTH))}
-        placeholder="Type here"
-        rows={5}
-        className="min-h-32 w-full border border-border px-3 py-2 text-sm text-black outline-none"
-      />
+        <CardContent>
+          <form onSubmit={handleSubmit}>
+            <div className="flex flex-col gap-6">
 
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="border border-border px-4 py-2 text-sm text-foreground disabled:cursor-not-allowed disabled:opacity-70"
-        >
-          {isSubmitting ? "Posting..." : "Post"}
-        </button>
-      </div>
+              <div className="grid gap-2">
+                <Label>Content</Label>
+                <textarea
+                  value={content}
+                  onChange={(event) =>
+                    setContent(
+                      event.target.value.slice(0, MAX_POST_LENGTH)
+                    )
+                  }
+                  placeholder="What's on your mind?"
+                  rows={5}
+                  className="min-h-32 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                />
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>
+                    {content.length}/{MAX_POST_LENGTH}
+                  </span>
+                </div>
+              </div>
 
-      {error ? <p className="text-sm text-red-400">{error}</p> : null}
-    </form>
-  );
+              {error && (
+                <p className="text-sm text-red-500">{error}</p>
+              )}
+
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Posting..." : "Post"}
+              </Button>
+
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>);
 }
