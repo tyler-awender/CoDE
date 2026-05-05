@@ -132,7 +132,7 @@ export function HigherLower() {
 
   if (!started) {
     return (
-      <div className="flex-1 grid place-items-center rounded-md border border-border bg-card text-muted-foreground overflow-auto w-full">
+        <div className="flex-1 w-full h-full min-h-[90vh] flex items-center justify-center rounded-md border border-border bg-card text-muted-foreground">
         <div
           className="flex flex-col items-center justify-center gap-6 rounded-xl border border-border p-10"
           style={{
