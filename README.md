@@ -1,19 +1,27 @@
 # CoDE
 
-A web-based game platform for programmers that delivers short games focused on logic and programming concepts
+A web-based game platform for programmers that delivers short games focused on logic and programming concepts.
+![](images/main.png)
 
 ## Features
 - Authentication system
 - User profiles
-- Analytics dashboard
+- Forums
+- Game-specific leaderboards
+- Site-wide analytics dashboard
 - Game library with four unique web games:
   - GitHub Higher/Lower
+    ![](images/higher-lower.png)
   - Scrambled Algorithms
+    ![](images/scrambled-algorithms.png)
   - Truth Table Wordle
+    ![](images/truth-table-wordle.png)
   - Guess the Programming Language
+    ![](images/guess-the-language.png)
 
 ## Technology Stack
 - Next.js
+- Supabase
 - React
 - Tailwind CSS
 - TypeScript
